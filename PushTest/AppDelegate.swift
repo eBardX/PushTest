@@ -12,6 +12,8 @@ public class AppDelegate: UIResponder {
 
     public func display(_ text: String,
                         terminator: String = "\n") {
+        print(text)
+
         displayedText.append(text)
         displayedText.append(terminator)
 
