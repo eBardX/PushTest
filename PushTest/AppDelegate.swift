@@ -52,7 +52,7 @@ extension AppDelegate: UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication,
-                            didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+                            didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         display("Application did finish launching, options: \(launchOptions ?? [:])")
 
         application.registerForRemoteNotifications()
@@ -65,7 +65,7 @@ extension AppDelegate: UIApplicationDelegate {
                             fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         display("Application did receive remote notification, payload: \(userInfo)")
 
-        defer { completionHandler(.newData) }
+        do /* defer */ { completionHandler(.newData) }
 
         // display payload ???
     }
@@ -76,7 +76,7 @@ extension AppDelegate: UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication,
-                            willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+                            willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         display("Application will finish launching, options: \(launchOptions ?? [:])")
 
         return true;
