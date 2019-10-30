@@ -71,34 +71,10 @@ public class AppDelegate: UIResponder {
 
 extension AppDelegate: UIApplicationDelegate {
     public func application(_ application: UIApplication,
-                            didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        display("Application did fail to register for remote notifications, error: \(error)")
-    }
-
-    public func application(_ application: UIApplication,
                             didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         display("[\(_state(of: application))] Application did finish launching, options: \(launchOptions ?? [:])")
 
-        #if !targetEnvironment(simulator)
-        application.registerForRemoteNotifications()
-        #endif
-
         return true
-    }
-
-    public func application(_ application: UIApplication,
-                            didReceiveRemoteNotification userInfo: [AnyHashable : Any],
-                            fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        display("Application did receive remote notification, payload: \(userInfo)")
-
-        do /* defer */ { completionHandler(.newData) }
-
-        // display payload ???
-    }
-
-    public func application(_ application: UIApplication,
-                            didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        display("Application did register for remote notifications with device token \(deviceToken.hexEncodedString())")
     }
 
     public func application(_ application: UIApplication,
