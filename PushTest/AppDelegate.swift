@@ -1,3 +1,4 @@
+import CallKit
 import os.log
 import PushKit
 import UIKit
@@ -32,6 +33,7 @@ public class AppDelegate: UIResponder {
 
     // MARK: Private Instance Properties
 
+    private let callProvider: CXProvider
     private let pushRegistry: PKPushRegistry
 
     private var displayedText: String
@@ -57,10 +59,20 @@ public class AppDelegate: UIResponder {
     // MARK: Overridden UIResponder Initializers
 
     override public init() {
+        let config = CXProviderConfiguration(localizedName: "Waldo")
+
+        config.maximumCallsPerCallGroup = 1
+        config.supportedHandleTypes = [.phoneNumber]
+        config.supportsVideo = false
+
+        self.callProvider = CXProvider(configuration: config)
         self.displayedText = ""
         self.pushRegistry = PKPushRegistry(queue: .main)
 
         super.init()
+
+        self.callProvider.setDelegate(self,
+                                      queue: .main)
 
         self.pushRegistry.delegate = self
         self.pushRegistry.desiredPushTypes = [.voIP]
@@ -133,6 +145,18 @@ extension AppDelegate: UIApplicationDelegate {
     }
 }
 
+// MARK: - CXProviderDelegate
+
+extension AppDelegate: CXProviderDelegate {
+    public func providerDidBegin(_ provider: CXProvider) {
+        display("Call provider did begin")
+    }
+
+    public func providerDidReset(_ provider: CXProvider) {
+        display("Call provider did reset")
+    }
+}
+
 // MARK: - PKPushRegistryDelegate
 
 extension AppDelegate: PKPushRegistryDelegate {
@@ -147,7 +171,22 @@ extension AppDelegate: PKPushRegistryDelegate {
                              completion: @escaping () -> Void) {
         display("Push Registry did receive incoming push with payload \(payload.dictionaryPayload) for type \(type.rawValue)")
 
-        completion()
+        guard
+            type == .voIP,
+            let handle = payload.dictionaryPayload["handle"] as? String,
+            let uuidString = payload.dictionaryPayload["callUUID"] as? String,
+            let callUUID = UUID(uuidString: uuidString)
+            else { return }
+
+        let callUpdate = CXCallUpdate()
+
+        callUpdate.remoteHandle = CXHandle(type: .phoneNumber,
+                                           value: handle)
+
+        callProvider.reportNewIncomingCall(with: callUUID,
+                                           update: callUpdate) { _ in
+                                            completion()
+        }
     }
 
     public func pushRegistry(_ registry: PKPushRegistry,

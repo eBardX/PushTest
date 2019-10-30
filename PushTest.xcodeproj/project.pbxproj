@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F557708E236A16D00007B121 /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52C80CC23439AC3001BDECE /* CallKit.framework */; };
 		F5F682FF203DCBF8005D829F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F682FE203DCBF8005D829F /* AppDelegate.swift */; };
 		F5F68301203DCBF8005D829F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F68300203DCBF8005D829F /* ViewController.swift */; };
 		F5F68304203DCBF8005D829F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5F68302203DCBF8005D829F /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F557708E236A16D00007B121 /* CallKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
