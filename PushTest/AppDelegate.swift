@@ -55,7 +55,9 @@ extension AppDelegate: UIApplicationDelegate {
                             didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         display("Application did finish launching, options: \(launchOptions ?? [:])")
 
+        #if !targetEnvironment(simulator)
         application.registerForRemoteNotifications()
+        #endif
 
         return true
     }
