@@ -119,8 +119,11 @@ extension AppDelegate: PKPushRegistryDelegate {
 
     public func pushRegistry(_ registry: PKPushRegistry,
                              didReceiveIncomingPushWith payload: PKPushPayload,
-                             for type: PKPushType) {
+                             for type: PKPushType,
+                             completion: @escaping () -> Void) {
         display("Push Registry did receive incoming push with payload \(payload.dictionaryPayload) for type \(type.rawValue)")
+
+        completion()
     }
 
     public func pushRegistry(_ registry: PKPushRegistry,
