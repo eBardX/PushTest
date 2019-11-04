@@ -1,3 +1,4 @@
+import os.log
 import PushKit
 import UIKit
 
@@ -14,6 +15,11 @@ public class AppDelegate: UIResponder {
                         terminator: String = "\n") {
         print(text)
 
+        os_log("%{public}s",
+               log: .pushTest,
+               type: .default,
+               text)
+
         displayedText.append(text)
         displayedText.append(terminator)
 
@@ -29,6 +35,24 @@ public class AppDelegate: UIResponder {
     private let pushRegistry: PKPushRegistry
 
     private var displayedText: String
+
+    // MARK: Private Instance Methods
+
+    private func _state(of application: UIApplication) -> String {
+        switch application.applicationState {
+        case .active:
+            return "Active"
+
+        case .background:
+            return "Background"
+
+        case .inactive:
+            return "Inactive"
+
+        @unknown default:
+            return String(describing: application.applicationState)
+        }
+    }
 
     // MARK: Overridden UIResponder Initializers
 
@@ -53,7 +77,7 @@ extension AppDelegate: UIApplicationDelegate {
 
     public func application(_ application: UIApplication,
                             didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        display("Application did finish launching, options: \(launchOptions ?? [:])")
+        display("[\(_state(of: application))] Application did finish launching, options: \(launchOptions ?? [:])")
 
         #if !targetEnvironment(simulator)
         application.registerForRemoteNotifications()
@@ -79,33 +103,33 @@ extension AppDelegate: UIApplicationDelegate {
 
     public func application(_ application: UIApplication,
                             willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        display("Application will finish launching, options: \(launchOptions ?? [:])")
+        display("[\(_state(of: application))] Application will finish launching, options: \(launchOptions ?? [:])")
 
         return true;
     }
 
     public func applicationDidBecomeActive(_ application: UIApplication) {
-        display("Application did become active")
+        display("[\(_state(of: application))] Application did become active")
     }
 
     public func applicationDidEnterBackground(_ application: UIApplication) {
-        display("Application did enter background")
+        display("[\(_state(of: application))] Application did enter background")
     }
 
     public func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
-        display("Application did receive memory warning")
+        display("[\(_state(of: application))] Application did receive memory warning")
     }
 
     public func applicationWillEnterForeground(_ application: UIApplication) {
-        display("Application will enter foreground")
+        display("[\(_state(of: application))] Application will enter foreground")
     }
 
     public func applicationWillResignActive(_ application: UIApplication) {
-        display("Application will resign active")
+        display("[\(_state(of: application))] Application will resign active")
     }
 
     public func applicationWillTerminate(_ application: UIApplication) {
-        display("Application will terminate")
+        display("[\(_state(of: application))] Application will terminate")
     }
 }
 
@@ -131,4 +155,9 @@ extension AppDelegate: PKPushRegistryDelegate {
                              for type: PKPushType) {
         display("Push Registry did update push token \(credentials.token.hexEncodedString()) for type \(type.rawValue)")
     }
+}
+
+internal extension OSLog {
+    static let pushTest = OSLog(subsystem: "com.xesticode.PushTest",
+                                category: "PushTest")
 }
